@@ -25,6 +25,12 @@
 
                 </ul>
             </div>
+            <div id="loggedIn" th:if="${user != null}">
+                <div style="margin: 10px"
+                     th:text="'Logged in as: '+${user.getUsername()} + ' Role: ' +${user.getAuthorities()[0]}">
+
+                </div>
+            </div>
         </div>
     </nav>
 </header>
