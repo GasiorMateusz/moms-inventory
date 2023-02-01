@@ -2,6 +2,7 @@ package com.codecool.dadsinventory.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -25,10 +26,15 @@ public class securityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
+        http
+                .csrf().disable()
+                .authorizeRequests()
                 .antMatchers("/", "/js/**", "/css/**", "/webjars/**").permitAll() ///js/site.js /webjars/bootstrap...
-                .and().authorizeRequests().antMatchers("/item/details/**").hasRole(UserRole.DAD.name())
-                .and().authorizeRequests().antMatchers("/home/privacy").hasRole(UserRole.MOM.name())
+                .antMatchers("/item/details/**").hasAuthority(UserPermission.DETAILS.getPermission())
+                .antMatchers("/home/privacy").hasAnyRole(UserRole.SON.name(), UserRole.MOM.name())
+                .antMatchers(HttpMethod.GET, "/management/**").hasAuthority(UserPermission.READER.getPermission())
+                .antMatchers(HttpMethod.POST, "/management/**").hasAuthority(UserPermission.EDITOR.getPermission())
+                .antMatchers(HttpMethod.GET, "/management/items").hasAuthority(UserPermission.EDITOR.getPermission())
                 .anyRequest()
                 .authenticated()
                 .and()
@@ -42,17 +48,20 @@ public class securityConfig extends WebSecurityConfigurerAdapter {
         UserDetails dad = User.builder()
                 .username("dad")
                 .password(passwordEncoder.encode("dad"))
-                .roles(UserRole.DAD.name())
+//                .roles(UserRole.DAD.name())
+                .authorities(UserRole.DAD.getGrantedAuthorities())
                 .build();
         UserDetails mom = User.builder()
                 .username("mom")
                 .password(passwordEncoder.encode("mom"))
-                .roles(UserRole.MOM.name())
+//                .roles(UserRole.MOM.name())
+                .authorities(UserRole.MOM.getGrantedAuthorities())
                 .build();
         UserDetails son = User.builder()
                 .username("son")
                 .password(passwordEncoder.encode("son"))
-                .roles(UserRole.SON.name())
+//                .roles(UserRole.SON.name())
+                .authorities(UserRole.SON.getGrantedAuthorities())
                 .build();
         return new InMemoryUserDetailsManager(
                 dad, mom, son

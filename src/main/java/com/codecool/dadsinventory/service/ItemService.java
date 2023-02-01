@@ -37,4 +37,9 @@ public class ItemService {
         Optional<Item> optionalItem = itemRepository.findById(id);
         return optionalItem.orElseThrow(NoSuchElementException::new);
     }
+
+    public List<Item> getAll() {
+        return itemRepository.findAll();
+    }
+
 }
