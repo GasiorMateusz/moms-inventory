@@ -49,8 +49,13 @@ public class securityConfig extends WebSecurityConfigurerAdapter {
                 .password(passwordEncoder.encode("mom"))
                 .roles(UserRole.MOM.name())
                 .build();
+        UserDetails son = User.builder()
+                .username("son")
+                .password(passwordEncoder.encode("son"))
+                .roles(UserRole.SON.name())
+                .build();
         return new InMemoryUserDetailsManager(
-                dad, mom
+                dad, mom, son
         );
 
     }
