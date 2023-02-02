@@ -27,7 +27,9 @@ public class securityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
+                .csrf().disable() //to enable csrf client has to send back header : X-XSRF-TOKEN with value it get from server
+//                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())//unable to acces token with js
+//                .and() //enabled csrf token
                 .authorizeRequests()
                 .antMatchers("/", "/js/**", "/css/**", "/webjars/**").permitAll() ///js/site.js /webjars/bootstrap...
                 .antMatchers("/item/details/**").hasAuthority(UserPermission.DETAILS.getPermission())
