@@ -44,6 +44,10 @@ public class securityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin() //store sessionID in postgres, now it is in guess in memory
                 .loginPage("/login").permitAll() // change basic login form
                 .defaultSuccessUrl("/", true) //default redirect. I guess it might be getter without this
+                .and()
+                .rememberMe().rememberMeCookieName("remember-me").tokenValiditySeconds(6000) //default 2 weeks //change to save in db
+                //rememberMe cookie name must equal to checkbox name
+//                .key("") can override default key
         ;
     }
 
