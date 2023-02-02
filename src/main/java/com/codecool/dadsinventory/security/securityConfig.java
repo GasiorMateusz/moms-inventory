@@ -43,6 +43,7 @@ public class securityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin() //store sessionID in postgres, now it is in guess in memory
                 .loginPage("/login").permitAll() // change basic login form
+                .defaultSuccessUrl("/", true) //default redirect. I guess it might be getter without this
         ;
     }
 
