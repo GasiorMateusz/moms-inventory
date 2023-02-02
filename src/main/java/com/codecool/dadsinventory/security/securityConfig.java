@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -44,10 +45,19 @@ public class securityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin() //store sessionID in postgres, now it is in guess in memory
                 .loginPage("/login").permitAll() // change basic login form
                 .defaultSuccessUrl("/", true) //default redirect. I guess it might be getter without this
+                .usernameParameter("username") //can change parameters name from default
                 .and()
                 .rememberMe().rememberMeCookieName("remember-me").tokenValiditySeconds(6000) //default 2 weeks //change to save in db
                 //rememberMe cookie name must equal to checkbox name
 //                .key("") can override default key
+                .and()
+                .logout()
+                .logoutUrl("/logout") //use POST to logout and HTTPS with csrf
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET")) //use it if not using csrf
+                .clearAuthentication(true)
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID", "remember-me")
+                .logoutSuccessUrl("/login")
         ;
     }
 
