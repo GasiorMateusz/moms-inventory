@@ -41,7 +41,7 @@ public class securityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest()
                 .authenticated()
                 .and()
-                .httpBasic()
+                .formLogin() //store sessionID in postgres, now it is in guess in memory
         ;
     }
 
