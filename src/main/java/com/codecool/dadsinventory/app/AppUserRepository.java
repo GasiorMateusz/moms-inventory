@@ -1,6 +1,5 @@
-package com.codecool.dadsinventory.repository;
+package com.codecool.dadsinventory.app;
 
-import com.codecool.dadsinventory.model.AppUser;
 import com.codecool.dadsinventory.security.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;

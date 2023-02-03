@@ -1,6 +1,5 @@
-package com.codecool.dadsinventory.service;
+package com.codecool.dadsinventory.app;
 
-import com.codecool.dadsinventory.repository.AppUserDao;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

@@ -1,4 +1,4 @@
-package com.codecool.dadsinventory.model;
+package com.codecool.dadsinventory.app;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

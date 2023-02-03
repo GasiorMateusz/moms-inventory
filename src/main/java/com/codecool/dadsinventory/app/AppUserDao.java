@@ -1,6 +1,4 @@
-package com.codecool.dadsinventory.repository;
-
-import com.codecool.dadsinventory.model.AppUser;
+package com.codecool.dadsinventory.app;
 
 import java.util.Optional;
 
