@@ -1,12 +1,14 @@
 package com.codecool.dadsinventory.service;
 
-import com.codecool.dadsinventory.auth.AuthGrantedAuthority;
-import com.codecool.dadsinventory.auth.AuthUserDetails;
-import com.codecool.dadsinventory.auth.AuthUserDetailsRepository;
+import com.codecool.dadsinventory.app.AppGrantedAuthorityRepository;
+import com.codecool.dadsinventory.app.AppSimpleGrantedAuthority;
+import com.codecool.dadsinventory.app.AppUserDetails;
+import com.codecool.dadsinventory.app.AppUserDetailsRepository;
 import com.codecool.dadsinventory.model.Category;
 import com.codecool.dadsinventory.model.Item;
 import com.codecool.dadsinventory.repository.CategoryRepository;
 import com.codecool.dadsinventory.repository.ItemRepository;
+import com.codecool.dadsinventory.security.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -23,16 +24,17 @@ public class InitService {
     private final ItemRepository itemRepository;
     private final CategoryRepository categoryRepository;
     private final PasswordEncoder passwordEncoder;
-    private final AuthUserDetailsRepository authUserDetailsRepository;
-    private final AuthGrantedAuthorityRepository authGrantedAuthorityRepository;
+
+    private final AppGrantedAuthorityRepository appGrantedAuthorityRepository;
+    private final AppUserDetailsRepository appUserDetailsRepository;
 
     @Autowired
-    public InitService(ItemRepository itemRepository, CategoryRepository categoryRepository, PasswordEncoder passwordEncoder, AuthUserDetailsRepository authUserDetailsRepository, AuthGrantedAuthorityRepository authGrantedAuthorityRepository) {
+    public InitService(ItemRepository itemRepository, CategoryRepository categoryRepository, PasswordEncoder passwordEncoder, AppGrantedAuthorityRepository appGrantedAuthorityRepository, AppUserDetailsRepository appUserDetailsRepository) {
         this.itemRepository = itemRepository;
         this.categoryRepository = categoryRepository;
         this.passwordEncoder = passwordEncoder;
-        this.authUserDetailsRepository = authUserDetailsRepository;
-        this.authGrantedAuthorityRepository = authGrantedAuthorityRepository;
+        this.appGrantedAuthorityRepository = appGrantedAuthorityRepository;
+        this.appUserDetailsRepository = appUserDetailsRepository;
     }
 
     public void seedDatabase() {
@@ -66,20 +68,21 @@ public class InitService {
 
             //uncomment if required
 
-            AuthUserDetails user2 = new AuthUserDetails();
-            user2.setUsername("user2");
-            user2.setPassword(passwordEncoder.encode("password"));
-            user2.setEnabled(true);
-            user2.setCredentialsNonExpired(true);
-            user2.setAccountNonExpired(true);
-            user2.setAccountNonLocked(true);
-
-            AuthGrantedAuthority grantedAuthority = new AuthGrantedAuthority();
-            grantedAuthority.setAuthority("USER");
-            grantedAuthority.setAuthUserDetails(user2);
-            authUserDetailsRepository.save(user2);
-            authGrantedAuthorityRepository.saveAndFlush(grantedAuthority);
-            user2.setAuthorities(Collections.singleton(grantedAuthority));
+            AppUserDetails son = new AppUserDetails();
+            son.setUsername("son");
+            son.setPassword(passwordEncoder.encode("son"));
+            son.setEnabled(true);
+            son.setCredentialsNonExpired(true);
+            son.setAccountNonExpired(true);
+            son.setAccountNonLocked(true);
+            son.setRole(UserRole.SON.name());
+            List<AppSimpleGrantedAuthority> sonAuthorities = UserRole.SON.getGrantedAuthorities(son); //todo refactor UserRole.getAuthorities to stop duplicating permissions
+            son.setAuthorities(sonAuthorities);
+            appUserDetailsRepository.saveAndFlush(son);
+            for (AppSimpleGrantedAuthority authority : sonAuthorities
+            ) {
+                appGrantedAuthorityRepository.saveAndFlush(authority);
+            }
         };
 
 

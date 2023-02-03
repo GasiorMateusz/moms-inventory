@@ -1,64 +1,67 @@
-package com.codecool.dadsinventory.auth;
+package com.codecool.dadsinventory.app;
 
+import lombok.Getter;
 import lombok.Setter;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.Collection;
 import java.util.List;
 
 @Entity
 @Setter
-public class AuthUserDetails implements UserDetails {
+@Getter
+public class AppUserDetails implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String username;
+    @OneToMany(mappedBy = "appUserDetails", fetch = FetchType.EAGER)
+    private List<AppSimpleGrantedAuthority> authorities;
     private String password;
+    private String username;
     private boolean accountNonExpired;
     private boolean accountNonLocked;
     private boolean credentialsNonExpired;
     private boolean enabled;
 
-    @OneToMany(mappedBy = "authUserDetails", fetch = FetchType.EAGER)
-    private List<AuthGrantedAuthority> authorities;
+    private String role;
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.authorities;
+    public List<AppSimpleGrantedAuthority> getAuthorities() {
+        return authorities;
+    }
+
+    public void addAuthority(AppSimpleGrantedAuthority appSimpleGrantedAuthority) {
+        this.authorities.add(appSimpleGrantedAuthority);
     }
 
     @Override
     public String getPassword() {
-        return this.password;
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return this.username;
+        return username;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return this.accountNonExpired;
+        return accountNonExpired;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return this.accountNonLocked;
+        return accountNonLocked;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return this.credentialsNonExpired;
+        return credentialsNonExpired;
     }
 
     @Override
     public boolean isEnabled() {
-        return this.enabled;
+        return enabled;
     }
-
-//setters 
 }

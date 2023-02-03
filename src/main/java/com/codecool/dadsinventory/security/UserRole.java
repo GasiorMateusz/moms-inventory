@@ -1,6 +1,7 @@
 package com.codecool.dadsinventory.security;
 
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import com.codecool.dadsinventory.app.AppSimpleGrantedAuthority;
+import com.codecool.dadsinventory.app.AppUserDetails;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,11 +21,11 @@ public enum UserRole {
         return permissions;
     }
 
-    public List<SimpleGrantedAuthority> getGrantedAuthorities() {
-        List<SimpleGrantedAuthority> permissions = getPermissions().stream()
-                .map(permission -> new SimpleGrantedAuthority(permission.getPermission()))
+    public List<AppSimpleGrantedAuthority> getGrantedAuthorities(AppUserDetails user) {
+        List<AppSimpleGrantedAuthority> permissions = getPermissions().stream()
+                .map(permission -> new AppSimpleGrantedAuthority(permission.getPermission(), user))
                 .collect(Collectors.toList());
-        permissions.add(new SimpleGrantedAuthority("ROLE_" + this.name()));
+        permissions.add(new AppSimpleGrantedAuthority("ROLE_" + this.name(), user));
         return permissions;
     }
 
