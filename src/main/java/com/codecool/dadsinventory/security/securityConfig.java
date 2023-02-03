@@ -1,6 +1,6 @@
 package com.codecool.dadsinventory.security;
 
-import com.codecool.dadsinventory.auth.AppUserService;
+import com.codecool.dadsinventory.service.AppUserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;

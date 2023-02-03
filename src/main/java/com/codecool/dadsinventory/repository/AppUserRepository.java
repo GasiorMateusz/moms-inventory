@@ -1,5 +1,6 @@
-package com.codecool.dadsinventory.auth;
+package com.codecool.dadsinventory.repository;
 
+import com.codecool.dadsinventory.model.AppUser;
 import com.codecool.dadsinventory.security.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,12 +11,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class FakeAppUserDaoService implements AppUserDao {
+public class AppUserRepository implements AppUserDao {
 
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public FakeAppUserDaoService(PasswordEncoder passwordEncoder) {
+    public AppUserRepository(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
     }
 
