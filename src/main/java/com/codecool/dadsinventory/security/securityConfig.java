@@ -1,17 +1,16 @@
 package com.codecool.dadsinventory.security;
 
+import com.codecool.dadsinventory.auth.AppUserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -20,9 +19,11 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class securityConfig extends WebSecurityConfigurerAdapter {
 
     private final PasswordEncoder passwordEncoder;
+    private final AppUserService appUserService;
 
-    public securityConfig(PasswordEncoder passwordEncoder) {
+    public securityConfig(PasswordEncoder passwordEncoder, AppUserService appUserService) {
         this.passwordEncoder = passwordEncoder;
+        this.appUserService = appUserService;
     }
 
     @Override
@@ -61,32 +62,16 @@ public class securityConfig extends WebSecurityConfigurerAdapter {
         ;
     }
 
-    @Override
     @Bean
-    protected UserDetailsService userDetailsService() {
-        UserDetails dad = User.builder()
-                .username("dad")
-                .password(passwordEncoder.encode("dad"))
-//                .roles(UserRole.DAD.name())
-                .authorities(UserRole.DAD.getGrantedAuthorities())
-                .build();
-        UserDetails mom = User.builder()
-                .username("mom")
-                .password(passwordEncoder.encode("mom"))
-//                .roles(UserRole.MOM.name())
-                .authorities(UserRole.MOM.getGrantedAuthorities())
-                .build();
-        UserDetails son = User.builder()
-                .username("son")
-                .password(passwordEncoder.encode("son"))
-//                .roles(UserRole.SON.name())
-                .authorities(UserRole.SON.getGrantedAuthorities())
-                .build();
-        return new InMemoryUserDetailsManager(
-                dad, mom, son
-        );
-
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setPasswordEncoder(passwordEncoder);
+        provider.setUserDetailsService(appUserService);
+        return provider;
     }
 
-
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(daoAuthenticationProvider());
+    }
 }

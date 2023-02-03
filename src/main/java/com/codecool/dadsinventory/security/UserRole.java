@@ -2,28 +2,28 @@ package com.codecool.dadsinventory.security;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public enum UserRole {
-    DAD(Set.of(UserPermission.DETAILS, UserPermission.READER)),
-    SON(Set.of(UserPermission.PRIVACY, UserPermission.DETAILS, UserPermission.EDITOR, UserPermission.READER)),
-    MOM(Set.of(UserPermission.PRIVACY));
+    DAD(List.of(UserPermission.DETAILS, UserPermission.READER)),
+    SON(List.of(UserPermission.PRIVACY, UserPermission.DETAILS, UserPermission.EDITOR, UserPermission.READER)),
+    MOM(List.of(UserPermission.PRIVACY));
 
-    private final Set<UserPermission> permissions;
+    private final List<UserPermission> permissions;
 
-    UserRole(Set<UserPermission> permissions) {
+    UserRole(List<UserPermission> permissions) {
         this.permissions = permissions;
     }
 
-    public Set<UserPermission> getPermissions() {
+    public List<UserPermission> getPermissions() {
         return permissions;
     }
 
-    public Set<SimpleGrantedAuthority> getGrantedAuthorities() {
-        Set<SimpleGrantedAuthority> permissions = getPermissions().stream()
+    public List<SimpleGrantedAuthority> getGrantedAuthorities() {
+        List<SimpleGrantedAuthority> permissions = getPermissions().stream()
                 .map(permission -> new SimpleGrantedAuthority(permission.getPermission()))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
         permissions.add(new SimpleGrantedAuthority("ROLE_" + this.name()));
         return permissions;
     }
